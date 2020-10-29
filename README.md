@@ -8,9 +8,15 @@ Here is the Prober robot in Rviz:
 
 ![Prober in Rviz](images/prober.gif)
 
-And here is the URDF graph for it:
+URDF graph for the Prober:
 
 ![Prober URDF graph](images/prober_graph.png)
+
+And here is a ROS graph when `create_robot.launch` is running:
+
+![ROS graph](images/ros_graph.png)
+
+As we can see here, `/joint_position_controller` publishes Prober's current joint state into the `/joint_states` topic. At the same time `/robot_state_publisher` is listenning for messages in `/joint_states`, and if a message arrives, it converts it into `/tf` format which is consumed by Rviz.
 
 ## How to run
 
@@ -23,4 +29,4 @@ If you want to generate the URDF graph use those commands:
 1. `rosrun xacro xacro robot.urdf > model.urdf`
 2. `urdf_to_graphiz model.urdf`
 
-`1` makes sure no Xacro is left in the robot.urdf and `2` produces the `model.pdf` file
+`1.` makes sure no Xacro macroses are left in the robot.urdf and `2.` produces the `model.pdf` file
