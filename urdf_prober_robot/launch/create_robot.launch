@@ -1,0 +1,12 @@
+<launch>
+  <arg name="model" default="$(find urdf_prober_robot)/urdf/robot.urdf"/>
+  <arg name="rvizconfig" default="$(find urdf_prober_robot)/rviz/rviz_settings.rviz" />
+
+  <param name="robot_description" command="$(find xacro)/xacro $(arg model)" />
+
+  <node pkg="urdf_prober_robot" name="joint_position_controller" type="control"/>
+  
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
+
+</launch>

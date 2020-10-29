@@ -1,0 +1,29 @@
+digraph G {
+node [shape=box];
+"base_link" [label="base_link"];
+"cabin_link" [label="cabin_link"];
+"wheel_left_back_link" [label="wheel_left_back_link"];
+"wheel_left_front_link" [label="wheel_left_front_link"];
+"probe_arm_link" [label="probe_arm_link"];
+"probe_link" [label="probe_link"];
+"radar_link" [label="radar_link"];
+"wheel_right_back_link" [label="wheel_right_back_link"];
+"wheel_right_front_link" [label="wheel_right_front_link"];
+node [shape=ellipse, color=blue, fontcolor=blue];
+"base_link" -> "base_to_cabin" [label="xyz: 0.5 0 0.2 \nrpy: 0 -0 0"]
+"base_to_cabin" -> "cabin_link"
+"base_link" -> "base_to_left_back_wheel" [label="xyz: -0.7 -0.5 -0.1 \nrpy: 0 -0 0"]
+"base_to_left_back_wheel" -> "wheel_left_back_link"
+"base_link" -> "base_to_left_front_wheel" [label="xyz: 0.7 -0.5 -0.1 \nrpy: 0 -0 0"]
+"base_to_left_front_wheel" -> "wheel_left_front_link"
+"base_link" -> "base_to_probe_arm" [label="xyz: 1.001 0 0 \nrpy: 0 -0 0"]
+"base_to_probe_arm" -> "probe_arm_link"
+"probe_arm_link" -> "probe_arm_to_probe" [label="xyz: -0.06 0 -0.075 \nrpy: 0 -0 0"]
+"probe_arm_to_probe" -> "probe_link"
+"base_link" -> "base_to_radar" [label="xyz: -0.5 0 0.1 \nrpy: 0 -0 0"]
+"base_to_radar" -> "radar_link"
+"base_link" -> "base_to_right_back_wheel" [label="xyz: -0.7 0.5 -0.1 \nrpy: 0 -0 0"]
+"base_to_right_back_wheel" -> "wheel_right_back_link"
+"base_link" -> "base_to_right_front_wheel" [label="xyz: 0.7 0.5 -0.1 \nrpy: 0 -0 0"]
+"base_to_right_front_wheel" -> "wheel_right_front_link"
+}

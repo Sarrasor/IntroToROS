@@ -1,0 +1,212 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="prober">
+  <!-- Base related values -->
+  <xacro:property name="base_length" value="2"/>
+  <xacro:property name="base_width" value="1"/>
+  <xacro:property name="base_height" value="0.2"/>
+
+  <!-- Probe arm related values -->
+  <xacro:property name="probe_arm_length" value="0.3"/>
+  <xacro:property name="probe_arm_width" value="0.15"/>
+  <xacro:property name="probe_arm_height" value="0.15"/>
+
+  <!-- Probe related values -->
+  <xacro:property name="probe_length" value="0.15"/>
+  <xacro:property name="probe_radius" value="0.03"/>
+
+  <!-- Radar related values -->
+  <xacro:property name="radar_model" value="package://urdf_prober_robot/meshes/radar.stl"/>
+  <xacro:property name="radar_scale" value="0.5"/>
+  <xacro:property name="radar_offset" value="0.5"/>
+  <xacro:property name="radar_lower" value="${-pi/2}"/>
+  <xacro:property name="radar_upper" value="${pi/2}"/>
+
+  <!-- Cabin related values -->
+  <xacro:property name="cabin_height" value="0.3"/>
+  <xacro:property name="cabin_offset" value="0.5"/>
+
+  <!-- Wheel related values -->
+  <xacro:property name="wheel_width" value="0.05"/>
+  <xacro:property name="wheel_radius" value="0.15"/>
+  <xacro:property name="wheel_offset" value="0.3"/>
+
+  <material name="orange">
+    <color rgba="0.988 0.729 0.012 1.0"/>
+  </material>
+
+  <material name="mint">
+    <color rgba="0.305882353 0.988235294 0.647058824 1.0"/>
+  </material>
+  
+
+  <!-- Links definition -->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="${base_length} ${base_width} ${base_height}"/>
+      </geometry>
+      <material name="orange"/>
+    </visual>
+  </link>
+
+  <link name="cabin_link">
+    <visual>
+      <geometry>
+        <box size="${base_length/3} ${base_width-0.1} ${cabin_height}"/>
+      </geometry>
+      <material name="orange"/>
+    </visual>
+  </link>
+
+  <link name="probe_arm_link">
+    <visual>
+      <geometry>
+        <box size="${probe_arm_length} ${probe_arm_width} ${probe_arm_height}"/>
+      </geometry>
+      <material name="mint"/>
+      <origin rpy="0 0 0" xyz="${-probe_arm_length/2} 0 0"/>
+    </visual>
+  </link>
+
+  <link name="probe_link">
+    <visual>
+      <geometry>
+        <cylinder length="${probe_length}" radius="${probe_radius}"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 ${probe_length/2}"/>
+    </visual>
+  </link>
+
+  <link name="radar_link">
+    <visual>
+      <origin rpy="0 0 ${pi/2}" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="${radar_model}" scale="${radar_scale} ${radar_scale} ${radar_scale}"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <link name="wheel_left_front_link">
+    <visual>
+      <geometry>
+        <cylinder length="${wheel_width}" radius="${wheel_radius}"/>
+      </geometry>
+      <origin rpy="${pi/2} 0 0" xyz="0 0 0"/>
+    </visual>
+  </link>
+
+  <link name="wheel_left_back_link">
+    <visual>
+      <geometry>
+        <cylinder length="${wheel_width}" radius="${wheel_radius}"/>
+      </geometry>
+      <origin rpy="${pi/2} 0 0" xyz="0 0 0"/>
+    </visual>
+  </link>
+
+  <link name="wheel_right_front_link">
+    <visual>
+      <geometry>
+        <cylinder length="${wheel_width}" radius="${wheel_radius}"/>
+      </geometry>
+      <origin rpy="${pi/2} 0 0" xyz="0 0 0"/>
+    </visual>
+  </link>
+
+  <link name="wheel_right_back_link">
+    <visual>
+      <geometry>
+        <cylinder length="${wheel_width}" radius="${wheel_radius}"/>
+      </geometry>
+      <origin rpy="${pi/2} 0 0" xyz="0 0 0"/>
+    </visual>
+  </link>
+
+
+  <!-- Joints definition -->
+  <joint name="base_to_probe_arm" type="prismatic">
+    <!-- Transformation -->
+    <parent link="base_link"/>
+    <child link="probe_arm_link"/>
+    <origin rpy="0 0 0" xyz="${base_length/2+0.001} 0 0"/>
+
+    <!-- Motion -->
+    <axis xyz="1 0 0"/>
+    <limit effort="100.0" lower="0.0" upper="${probe_arm_length}" velocity="0.5"/>
+  </joint>
+
+  <joint name="probe_arm_to_probe" type="prismatic">
+    <!-- Transformation -->
+    <parent link="probe_arm_link"/>
+    <child link="probe_link"/>
+    <origin rpy="0 0 0" xyz="${-probe_radius*2} 0 ${-probe_arm_width/2}"/>
+
+    <!-- Motion -->
+    <axis xyz="0 0 -1"/>
+    <limit effort="100.0" lower="0.0" upper="${probe_length}" velocity="0.5"/>
+  </joint>
+
+  <joint name="base_to_radar" type="revolute">
+    <!-- Transformation -->
+    <parent link="base_link"/>
+    <child link="radar_link"/>
+    <origin rpy="0 0 0" xyz="${-base_length/2 + radar_offset} 0 ${base_height/2}"/>
+
+    <!-- Motion -->
+    <axis xyz="0 0 1"/>
+    <limit effort="100.0" lower="${radar_lower}" upper="${radar_upper}" velocity="0.5"/>
+  </joint>
+
+  <joint name="base_to_cabin" type="fixed">
+    <!-- Transformation -->
+    <parent link="base_link"/>
+    <child link="cabin_link"/>
+    <origin rpy="0 0 0" xyz="${cabin_offset} 0 ${base_height}"/>
+
+  </joint>
+
+  <joint name="base_to_left_front_wheel" type="continuous">
+    <!-- Transformation -->
+    <parent link="base_link"/>
+    <child link="wheel_left_front_link"/>
+    <origin rpy="0 0 0" xyz="${base_length/2 - wheel_offset} ${-base_width/2} -0.1"/>
+
+    <!-- Motion -->
+    <axis xyz="0 1 0"/>
+    <limit effort="100.0" velocity="0.5"/>
+  </joint>
+
+  <joint name="base_to_left_back_wheel" type="continuous">
+    <!-- Transformation -->
+    <parent link="base_link"/>
+    <child link="wheel_left_back_link"/>
+    <origin rpy="0 0 0" xyz="${-base_length/2 + wheel_offset} ${-base_width/2} -0.1"/>
+
+    <!-- Motion -->
+    <axis xyz="0 1 0"/>
+    <limit effort="100.0" velocity="0.5"/>
+  </joint>
+
+  <joint name="base_to_right_back_wheel" type="continuous">
+    <!-- Transformation -->
+    <parent link="base_link"/>
+    <child link="wheel_right_back_link"/>
+    <origin rpy="0 0 0" xyz="${-base_length/2 + wheel_offset} ${base_width/2} -0.1"/>
+
+    <!-- Motion -->
+    <axis xyz="0 1 0"/>
+    <limit effort="100.0" velocity="0.5"/>
+  </joint>
+
+  <joint name="base_to_right_front_wheel" type="continuous">
+    <!-- Transformation -->
+    <parent link="base_link"/>
+    <child link="wheel_right_front_link"/>
+    <origin rpy="0 0 0" xyz="${base_length/2 - wheel_offset} ${base_width/2} -0.1"/>
+
+    <!-- Motion -->
+    <axis xyz="0 1 0"/>
+    <limit effort="100.0" velocity="0.5"/>
+  </joint>
+</robot>
