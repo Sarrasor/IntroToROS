@@ -1,8 +1,15 @@
 # ProberRobot
 
-## Description
-
 This repo contains simple URDF robot definition and control of it via C++ joint state publisher
+
+## Robot Description
+
+Prober - is a robot designed to explore unknown terrains by probing ground, processing samples, and transmitting them to the base station.
+
+Thus it consists of:
+* **Mobile platform** - to reach the target location
+* **Probe** - to perform an experiment
+* **Radar** - to transmit the results
 
 Here is the Prober robot in Rviz:
 
